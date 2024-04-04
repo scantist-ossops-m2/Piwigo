@@ -339,7 +339,6 @@ $tab_codes = array_map(
 
 if (isset($_GET['mode']))
 {
-  check_input_parameter('mode', $_GET, false, '/^(global|unit)$/');
   $page['tab'] = $_GET['mode'];
 }
 else

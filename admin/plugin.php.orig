@@ -61,6 +61,6 @@ if (is_file($filename))
 }
 else
 {
-  die('Missing file '.htmlentities($filename));
+  die('Missing file '.$filename);
 }
 ?>

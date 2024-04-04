@@ -26,28 +26,37 @@ if( !defined("PHPWG_ROOT_PATH") )
   die ("Hacking attempt!");
 }
 
-include_once(PHPWG_ROOT_PATH.'admin/include/tabsheet.class.php');
+include_once(PHPWG_ROOT_PATH.'admin/include/functions.php');
+check_status(ACCESS_ADMINISTRATOR);
 
-$my_base_url = get_root_url().'admin.php?page=languages';
-
-if (isset($_GET['tab']))
+$sections = explode('/', $_GET['section'] );
+for ($i=0; $i<count($sections); $i++)
 {
-  check_input_parameter('tab', $_GET, false, '/^(installed|update|new)$/');
-  $page['tab'] = $_GET['tab'];
+  if (empty($sections[$i]) or $sections[$i]=='..')
+  {
+    unset($sections[$i]);
+    $i--;
+  }
+}
+
+if (count($sections)<2)
+{
+  die('Invalid plugin URL');
+}
+
+$plugin_id = $sections[0];
+if ( !isset($pwg_loaded_plugins[$plugin_id]) )
+{
+  die('Invalid URL - plugin '.$plugin_id.' not active');
+}
+
+$filename = PHPWG_PLUGINS_PATH.implode('/', $sections);
+if (is_file($filename))
+{
+  include_once($filename);
 }
 else
 {
-  $page['tab'] = 'installed';
+  die('Missing file '.$filename);
 }
-
-$tabsheet = new tabsheet();
-$tabsheet->set_id('languages');
-$tabsheet->select($page['tab']);
-$tabsheet->assign();
-
-if ($page['tab'] == 'update')
-  include(PHPWG_ROOT_PATH.'admin/updates_ext.php');
-else
-  include(PHPWG_ROOT_PATH.'admin/languages_'.$page['tab'].'.php');
-
 ?>

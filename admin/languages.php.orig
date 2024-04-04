@@ -26,43 +26,25 @@ if( !defined("PHPWG_ROOT_PATH") )
   die ("Hacking attempt!");
 }
 
-include_once(PHPWG_ROOT_PATH.'admin/include/functions.php');
-check_status(ACCESS_ADMINISTRATOR);
+include_once(PHPWG_ROOT_PATH.'admin/include/tabsheet.class.php');
 
-$sections = explode('/', $_GET['section'] );
-for ($i=0; $i<count($sections); $i++)
-{
-  if (empty($sections[$i]))
-  {
-    unset($sections[$i]);
-    $i--;
-    continue;
-  }
+$my_base_url = get_root_url().'admin.php?page=languages';
 
-  if ($sections[$i] == '..' or !preg_match('/^[a-zA-Z_\.-]+$/', $sections[$i]))
-  {
-    die('invalid section token ['.htmlentities($sections[$i]).']');
-  }
-}
-
-if (count($sections)<2)
-{
-  die('Invalid plugin URL');
-}
-
-$plugin_id = $sections[0];
-if ( !isset($pwg_loaded_plugins[$plugin_id]) )
-{
-  die('Invalid URL - plugin '.$plugin_id.' not active');
-}
-
-$filename = PHPWG_PLUGINS_PATH.implode('/', $sections);
-if (is_file($filename))
-{
-  include_once($filename);
-}
+if (isset($_GET['tab']))
+  $page['tab'] = $_GET['tab'];
 else
-{
-  die('Missing file '.htmlentities($filename));
-}
+  $page['tab'] = 'installed';
+
+$tabsheet = new tabsheet();
+$tabsheet->add('installed', l10n('Installed Languages'), $my_base_url.'&amp;tab=installed');
+$tabsheet->add('update', l10n('Check for updates'), $my_base_url.'&amp;tab=update');
+$tabsheet->add('new', l10n('Add New Language'), $my_base_url.'&amp;tab=new');
+$tabsheet->select($page['tab']);
+$tabsheet->assign();
+
+if ($page['tab'] == 'update')
+  include(PHPWG_ROOT_PATH.'admin/updates_ext.php');
+else
+  include(PHPWG_ROOT_PATH.'admin/languages_'.$page['tab'].'.php');
+
 ?>

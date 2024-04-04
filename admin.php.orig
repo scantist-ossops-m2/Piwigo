@@ -31,8 +31,6 @@ include_once(PHPWG_ROOT_PATH.'admin/include/functions_plugins.inc.php');
 
 trigger_action('loc_begin_admin');
 
-check_input_parameter('page', $_GET, false, '/^[a-zA-Z\d_-]+$/');
-
 // +-----------------------------------------------------------------------+
 // | Check Access and exit when user status is not ok                      |
 // +-----------------------------------------------------------------------+

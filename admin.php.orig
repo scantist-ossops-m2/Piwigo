@@ -37,8 +37,6 @@ include_once( PHPWG_ROOT_PATH.'admin/include/isadmin.inc.php' );
 
 sync_users();
 
-check_input_parameter('page', $_GET, false, '/^[a-zA-Z\d_-]+$/');
-
 // +-----------------------------------------------------------------------+
 // |                            variables init                             |
 // +-----------------------------------------------------------------------+
